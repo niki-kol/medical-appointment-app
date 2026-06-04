@@ -1,17 +1,23 @@
-# calendar
+# Medical Appointment Management App
 
-A new Flutter project.
+A cross-platform mobile application built with Flutter for managing medical appointments between a doctor and a secretary.
 
-## Getting Started
+## 🔹 Overview
+This application allows multiple users to manage and synchronize appointments in real time, ensuring consistency and efficient scheduling.
 
-This project is a starting point for a Flutter application.
+## 🔹 Features
+- Real-time appointment synchronization (Firebase Firestore)  
+- Multi-user support (doctor & secretary roles)  
+- Add, edit, and delete appointments  
+- Calendar view and daily schedule overview  
+- Search and filtering functionality  
+- Dark mode support  
 
-A few resources to get you started if this is your first Flutter project:
+## 🔹 Tech Stack
+- Flutter & Dart  
+- Firebase Firestore  
+- Firebase Authentication  
+- Provider (State Management)  
 
-- [Learn Flutter](https://docs.flutter.dev/get-started/learn-flutter)
-- [Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Flutter learning resources](https://docs.flutter.dev/reference/learning-resources)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## 🔹 Notes
+This project is not publicly available due to privacy considerations, as it is used by specific users.
