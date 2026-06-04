@@ -1,0 +1,42 @@
+name: calendar
+description: "A new Flutter project."
+# The following line prevents the package from being accidentally published to
+# pub.dev using `flutter pub publish`. This is preferred for private packages.
+publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.11.1
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  cupertino_icons: ^1.0.8
+  table_calendar: ^3.1.0
+  provider: ^6.1.5+1
+  intl: ^0.20.0
+  collection: ^1.19.1
+  shared_preferences: ^2.2.2
+  firebase_core: ^3.0.0
+  cloud_firestore: ^5.0.0
+  
+  flutter_localizations:
+    sdk: flutter
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+  hive_generator: 2.0.1
+  build_runner: ^2.4.13
+
+
+
+flutter:
+
+  
+  uses-material-design: true
+
+

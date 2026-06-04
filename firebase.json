@@ -1,0 +1,37 @@
+{
+  "flutter": {
+    "platforms": {
+      "android": {
+        "default": {
+          "projectId": "doctor-appointments-c3e30",
+          "appId": "1:282734580073:android:92f5d1062d1c26e46c6df8",
+          "fileOutput": "android/app/google-services.json"
+        }
+      },
+      "dart": {
+        "lib/firebase_options.dart": {
+          "projectId": "doctor-appointments-c3e30",
+          "configurations": {
+            "android": "1:282734580073:android:92f5d1062d1c26e46c6df8",
+            "web": "1:282734580073:web:2d524d7b2d9457ff6c6df8",
+            "windows": "1:282734580073:web:a6de6e7f63c1259e6c6df8"
+          }
+        }
+      }
+    }
+  },
+  "hosting": {
+    "public": "build/web",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ],
+    "rewrites": [
+      {
+        "source": "**",
+        "destination": "/index.html"
+      }
+    ]
+  }
+}
