@@ -31,7 +31,6 @@ class DayAppointmentsPage extends StatelessWidget {
           ),
           child: Column(
             children: [
-              // Header strip
               Container(
                 width: double.infinity,
                 padding: EdgeInsets.symmetric(
@@ -59,7 +58,7 @@ class DayAppointmentsPage extends StatelessWidget {
                     ),
                     const Spacer(),
                     Text(
-                      '07:00 – 21:00',
+                      '07:00 – 20:30',
                       style: TextStyle(
                         fontSize: isDesktop ? 13 : 11,
                         color: Theme.of(
@@ -70,8 +69,6 @@ class DayAppointmentsPage extends StatelessWidget {
                   ],
                 ),
               ),
-
-              // Slot grid
               Expanded(
                 child: Padding(
                   padding: EdgeInsets.all(isDesktop ? 20 : 8),
@@ -126,7 +123,7 @@ class DayAppointmentsPage extends StatelessWidget {
   // ── Add dialog ──────────────────────────────────────────────────────────────
 
   void _showAddDialog(
-    BuildContext context,
+    BuildContext pageContext,
     DateTime slotDateTime,
     AppointmentProvider provider,
   ) {
@@ -134,105 +131,110 @@ class DayAppointmentsPage extends StatelessWidget {
     final phoneCtrl = TextEditingController();
     final notesCtrl = TextEditingController();
     final patientFocus = FocusNode();
-    final isDesktop = MediaQuery.of(context).size.width > 600;
-    final timeLabel = TimeOfDay.fromDateTime(slotDateTime).format(context);
+    final isDesktop = MediaQuery.of(pageContext).size.width > 600;
+    final timeLabel = TimeOfDay.fromDateTime(slotDateTime).format(pageContext);
 
     showDialog(
-      context: context,
-      builder: (_) => StatefulBuilder(
-        builder: (context, setState) {
-          patientCtrl.addListener(() => setState(() {}));
-          return Dialog(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(16),
-            ),
-            insetPadding: EdgeInsets.symmetric(
-              horizontal: isDesktop ? 160 : 20,
-              vertical: isDesktop ? 40 : 24,
-            ),
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.all(24),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Title
-                  Row(
-                    children: [
-                      Icon(
-                        Icons.add_circle_outline,
-                        color: Theme.of(context).colorScheme.primary,
-                        size: 22,
-                      ),
-                      const SizedBox(width: 10),
-                      Expanded(
-                        child: Text(
-                          'Νέο Ραντεβού',
-                          style: TextStyle(
-                            fontSize: 17,
-                            fontWeight: FontWeight.w700,
-                            color: Theme.of(context).colorScheme.onSurface,
+      context: pageContext,
+      builder: (dialogContext) {
+        return StatefulBuilder(
+          builder: (sbContext, setState) {
+            patientCtrl.addListener(() => setState(() {}));
+            return Dialog(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(16),
+              ),
+              insetPadding: EdgeInsets.symmetric(
+                horizontal: isDesktop ? 160 : 20,
+                vertical: isDesktop ? 40 : 24,
+              ),
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.all(24),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Icon(
+                          Icons.add_circle_outline,
+                          color: Theme.of(sbContext).colorScheme.primary,
+                          size: 22,
+                        ),
+                        const SizedBox(width: 10),
+                        Expanded(
+                          child: Text(
+                            'Νέο Ραντεβού',
+                            style: TextStyle(
+                              fontSize: 17,
+                              fontWeight: FontWeight.w700,
+                              color: Theme.of(sbContext).colorScheme.onSurface,
+                            ),
                           ),
                         ),
-                      ),
-                      _TimePill(timeLabel: timeLabel),
-                    ],
-                  ),
-                  const SizedBox(height: 20),
-                  _DialogField(
-                    controller: patientCtrl,
-                    focusNode: patientFocus,
-                    label: 'Όνομα Ασθενούς',
-                    icon: Icons.person_outline,
-                  ),
-                  const SizedBox(height: 12),
-                  _DialogField(
-                    controller: phoneCtrl,
-                    label: 'Τηλέφωνο',
-                    icon: Icons.phone_outlined,
-                    keyboardType: TextInputType.phone,
-                  ),
-                  const SizedBox(height: 12),
-                  _DialogField(
-                    controller: notesCtrl,
-                    label: 'Σημειώσεις',
-                    icon: Icons.notes_outlined,
-                    maxLines: 2,
-                  ),
-                  const SizedBox(height: 20),
-                  // Buttons: Ακύρωση + Αποθήκευση
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      TextButton(
-                        onPressed: () => Navigator.pop(context),
-                        child: const Text('Ακύρωση'),
-                      ),
-                      const SizedBox(width: 8),
-                      FilledButton(
-                        onPressed: patientCtrl.text.isNotEmpty
-                            ? () {
-                                provider.addAppointment(
-                                  Appointment(
-                                    patientName: patientCtrl.text.trim(),
-                                    phoneNumber: phoneCtrl.text.trim(),
-                                    notes: notesCtrl.text.trim(),
-                                    dateTime: slotDateTime,
-                                  ),
-                                );
-                                Navigator.pop(context);
-                              }
-                            : null,
-                        child: const Text('Αποθήκευση'),
-                      ),
-                    ],
-                  ),
-                ],
+                        _TimePill(timeLabel: timeLabel),
+                      ],
+                    ),
+                    const SizedBox(height: 20),
+                    _DialogField(
+                      controller: patientCtrl,
+                      focusNode: patientFocus,
+                      label: 'Όνομα Ασθενούς',
+                      icon: Icons.person_outline,
+                    ),
+                    const SizedBox(height: 12),
+                    _DialogField(
+                      controller: phoneCtrl,
+                      label: 'Τηλέφωνο',
+                      icon: Icons.phone_outlined,
+                      keyboardType: TextInputType.phone,
+                    ),
+                    const SizedBox(height: 12),
+                    _DialogField(
+                      controller: notesCtrl,
+                      label: 'Σημειώσεις',
+                      icon: Icons.notes_outlined,
+                      maxLines: 2,
+                    ),
+                    const SizedBox(height: 20),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        TextButton(
+                          onPressed: () => Navigator.pop(dialogContext),
+                          child: const Text('Ακύρωση'),
+                        ),
+                        const SizedBox(width: 8),
+                        FilledButton(
+                          onPressed: patientCtrl.text.isNotEmpty
+                              ? () {
+                                  if (provider.hasConflict(slotDateTime)) {
+                                    Navigator.pop(dialogContext);
+                                    _showSlotTakenDialog(pageContext);
+                                  } else {
+                                    Navigator.pop(dialogContext);
+                                    provider.addAppointment(
+                                      Appointment(
+                                        patientName: patientCtrl.text.trim(),
+                                        phoneNumber: phoneCtrl.text.trim(),
+                                        notes: notesCtrl.text.trim(),
+                                        dateTime: slotDateTime,
+                                      ),
+                                    );
+                                  }
+                                }
+                              : null,
+                          child: const Text('Αποθήκευση'),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
               ),
-            ),
-          );
-        },
-      ),
+            );
+          },
+        );
+      },
     );
 
     WidgetsBinding.instance.addPostFrameCallback(
@@ -243,157 +245,386 @@ class DayAppointmentsPage extends StatelessWidget {
   // ── Edit dialog ─────────────────────────────────────────────────────────────
 
   void _showEditDialog(
-    BuildContext context,
-    Appointment apt, // named apt — no ambiguity
+    BuildContext pageContext,
+    Appointment apt,
     AppointmentProvider provider,
   ) {
     final patientCtrl = TextEditingController(text: apt.patientName);
     final phoneCtrl = TextEditingController(text: apt.phoneNumber);
     final notesCtrl = TextEditingController(text: apt.notes);
     final patientFocus = FocusNode();
-    final isDesktop = MediaQuery.of(context).size.width > 600;
-    final timeLabel = TimeOfDay.fromDateTime(apt.dateTime).format(context);
+    final isDesktop = MediaQuery.of(pageContext).size.width > 600;
+    final timeLabel = TimeOfDay.fromDateTime(apt.dateTime).format(pageContext);
 
     showDialog(
-      context: context,
-      builder: (_) => StatefulBuilder(
-        builder: (context, setState) {
-          patientCtrl.addListener(() => setState(() {}));
+      context: pageContext,
+      builder: (dialogContext) {
+        return StatefulBuilder(
+          builder: (sbContext, setState) {
+            patientCtrl.addListener(() => setState(() {}));
+            return Dialog(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(16),
+              ),
+              insetPadding: EdgeInsets.symmetric(
+                horizontal: isDesktop ? 160 : 20,
+                vertical: isDesktop ? 40 : 24,
+              ),
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.all(24),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Title row
+                    Row(
+                      children: [
+                        Icon(
+                          Icons.edit_outlined,
+                          color: Theme.of(sbContext).colorScheme.primary,
+                          size: 22,
+                        ),
+                        const SizedBox(width: 10),
+                        Expanded(
+                          child: Text(
+                            'Επεξεργασία Ραντεβού',
+                            style: TextStyle(
+                              fontSize: 17,
+                              fontWeight: FontWeight.w700,
+                              color: Theme.of(sbContext).colorScheme.onSurface,
+                            ),
+                          ),
+                        ),
+                        _TimePill(timeLabel: timeLabel),
+                      ],
+                    ),
+                    const SizedBox(height: 20),
+                    _DialogField(
+                      controller: patientCtrl,
+                      focusNode: patientFocus,
+                      label: 'Όνομα Ασθενούς',
+                      icon: Icons.person_outline,
+                    ),
+                    const SizedBox(height: 12),
+                    _DialogField(
+                      controller: phoneCtrl,
+                      label: 'Τηλέφωνο',
+                      icon: Icons.phone_outlined,
+                      keyboardType: TextInputType.phone,
+                    ),
+                    const SizedBox(height: 12),
+                    _DialogField(
+                      controller: notesCtrl,
+                      label: 'Σημειώσεις',
+                      icon: Icons.notes_outlined,
+                      maxLines: 2,
+                    ),
+                    const SizedBox(height: 16),
+
+                    // ── Reschedule button ──
+                    OutlinedButton.icon(
+                      onPressed: () {
+                        Navigator.pop(dialogContext);
+                        _showRescheduleDialog(pageContext, apt, provider);
+                      },
+                      icon: const Icon(Icons.event_repeat_outlined, size: 18),
+                      label: const Text('Αλλαγή Ημέρας/Ώρας'),
+                      style: OutlinedButton.styleFrom(
+                        minimumSize: const Size(double.infinity, 44),
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+
+                    // ── Action buttons ──
+                    if (isDesktop)
+                      Row(
+                        children: [
+                          TextButton.icon(
+                            onPressed: () {
+                              Navigator.pop(dialogContext);
+                              _showDeleteConfirmDialog(
+                                pageContext,
+                                apt,
+                                provider,
+                              );
+                            },
+                            icon: const Icon(Icons.delete_outline, size: 16),
+                            label: const Text('Διαγραφή'),
+                            style: TextButton.styleFrom(
+                              foregroundColor: Colors.red.shade400,
+                            ),
+                          ),
+                          const Spacer(),
+                          TextButton(
+                            onPressed: () => Navigator.pop(dialogContext),
+                            child: const Text('Ακύρωση'),
+                          ),
+                          const SizedBox(width: 12),
+                          FilledButton(
+                            onPressed: patientCtrl.text.isNotEmpty
+                                ? () {
+                                    provider.updateAppointment(
+                                      apt,
+                                      patientCtrl.text.trim(),
+                                      phoneCtrl.text.trim(),
+                                      notesCtrl.text.trim(),
+                                    );
+                                    Navigator.pop(dialogContext);
+                                  }
+                                : null,
+                            child: const Text('Αποθήκευση'),
+                          ),
+                        ],
+                      )
+                    else
+                      Column(
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              TextButton(
+                                onPressed: () => Navigator.pop(dialogContext),
+                                child: const Text('Ακύρωση'),
+                              ),
+                              const SizedBox(width: 8),
+                              FilledButton(
+                                onPressed: patientCtrl.text.isNotEmpty
+                                    ? () {
+                                        provider.updateAppointment(
+                                          apt,
+                                          patientCtrl.text.trim(),
+                                          phoneCtrl.text.trim(),
+                                          notesCtrl.text.trim(),
+                                        );
+                                        Navigator.pop(dialogContext);
+                                      }
+                                    : null,
+                                child: const Text('Αποθήκευση'),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 4),
+                          TextButton.icon(
+                            onPressed: () {
+                              Navigator.pop(dialogContext);
+                              _showDeleteConfirmDialog(
+                                pageContext,
+                                apt,
+                                provider,
+                              );
+                            },
+                            icon: const Icon(Icons.delete_outline, size: 16),
+                            label: const Text('Διαγραφή'),
+                            style: TextButton.styleFrom(
+                              foregroundColor: Colors.red.shade400,
+                            ),
+                          ),
+                        ],
+                      ),
+                  ],
+                ),
+              ),
+            );
+          },
+        );
+      },
+    );
+
+    WidgetsBinding.instance.addPostFrameCallback(
+      (_) => patientFocus.requestFocus(),
+    );
+  }
+
+  // ── Reschedule dialog ────────────────────────────────────────────────────────
+
+  void _showRescheduleDialog(
+    BuildContext pageContext,
+    Appointment apt,
+    AppointmentProvider provider,
+  ) async {
+    final isDesktop = MediaQuery.of(pageContext).size.width > 600;
+    final navigator = Navigator.of(pageContext);
+
+    // Step 1: Pick a new date
+    final newDate = await showDatePicker(
+      context: pageContext,
+      initialDate: apt.dateTime,
+      firstDate: DateTime(2020),
+      lastDate: DateTime(2030),
+      locale: const Locale('el', 'GR'),
+      helpText: 'Επιλέξτε νέα ημερομηνία',
+      confirmText: 'ΕΠΙΛΟΓΗ',
+      cancelText: 'ΑΚΥΡΩΣΗ',
+    );
+
+    if (newDate == null) return;
+    if (!pageContext.mounted) return;
+
+    // Step 2: Pick a new time slot
+    navigator.push(
+      DialogRoute(
+        context: pageContext,
+        builder: (dialogContext) {
           return Dialog(
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(16),
             ),
             insetPadding: EdgeInsets.symmetric(
-              horizontal: isDesktop ? 160 : 20,
+              horizontal: isDesktop ? 80 : 16,
               vertical: isDesktop ? 40 : 24,
             ),
-            child: SingleChildScrollView(
+            child: Padding(
               padding: const EdgeInsets.all(24),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Title
                   Row(
                     children: [
                       Icon(
-                        Icons.edit_outlined,
-                        color: Theme.of(context).colorScheme.primary,
+                        Icons.access_time_outlined,
+                        color: Theme.of(dialogContext).colorScheme.primary,
                         size: 22,
                       ),
                       const SizedBox(width: 10),
                       Expanded(
                         child: Text(
-                          'Επεξεργασία Ραντεβού',
+                          'Επιλέξτε νέα ώρα',
                           style: TextStyle(
                             fontSize: 17,
                             fontWeight: FontWeight.w700,
-                            color: Theme.of(context).colorScheme.onSurface,
+                            color: Theme.of(
+                              dialogContext,
+                            ).colorScheme.onSurface,
                           ),
                         ),
                       ),
-                      _TimePill(timeLabel: timeLabel),
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 10,
+                          vertical: 4,
+                        ),
+                        decoration: BoxDecoration(
+                          color: Theme.of(
+                            dialogContext,
+                          ).colorScheme.primaryContainer,
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Text(
+                          DateFormat.yMMMd('el_GR').format(newDate),
+                          style: TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w600,
+                            color: Theme.of(dialogContext).colorScheme.primary,
+                          ),
+                        ),
+                      ),
                     ],
                   ),
-                  const SizedBox(height: 20),
-                  _DialogField(
-                    controller: patientCtrl,
-                    focusNode: patientFocus,
-                    label: 'Όνομα Ασθενούς',
-                    icon: Icons.person_outline,
-                  ),
-                  const SizedBox(height: 12),
-                  _DialogField(
-                    controller: phoneCtrl,
-                    label: 'Τηλέφωνο',
-                    icon: Icons.phone_outlined,
-                    keyboardType: TextInputType.phone,
-                  ),
-                  const SizedBox(height: 12),
-                  _DialogField(
-                    controller: notesCtrl,
-                    label: 'Σημειώσεις',
-                    icon: Icons.notes_outlined,
-                    maxLines: 2,
-                  ),
-                  const SizedBox(height: 20),
-                  if (isDesktop)
-                    Row(
-                      children: [
-                        TextButton.icon(
-                          onPressed: () {
-                            provider.deleteAppointment(apt);
-                            Navigator.pop(context);
-                          },
-                          icon: const Icon(Icons.delete_outline, size: 16),
-                          label: const Text('Διαγραφή'),
-                          style: TextButton.styleFrom(
-                            foregroundColor: Colors.red.shade400,
-                          ),
-                        ),
-                        const SizedBox(width: 20),
-                        TextButton(
-                          onPressed: () => Navigator.pop(context),
-                          child: const Text('Ακύρωση'),
-                        ),
-                        const SizedBox(width: 20),
-                        FilledButton(
-                          onPressed: patientCtrl.text.isNotEmpty
-                              ? () {
-                                  provider.updateAppointment(
-                                    apt,
-                                    patientCtrl.text.trim(),
-                                    phoneCtrl.text.trim(),
-                                    notesCtrl.text.trim(),
-                                  );
-                                  Navigator.pop(context);
-                                }
-                              : null,
-                          child: const Text('Αποθήκευση'),
-                        ),
-                      ],
-                    )
-                  else
-                    Column(
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            TextButton(
-                              onPressed: () => Navigator.pop(context),
-                              child: const Text('Ακύρωση'),
+                  const SizedBox(height: 16),
+                  SizedBox(
+                    height: isDesktop ? 300 : 260,
+                    child: GridView.builder(
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: isDesktop ? 6 : 3,
+                        childAspectRatio: isDesktop ? 2.2 : 1.8,
+                        crossAxisSpacing: isDesktop ? 10 : 6,
+                        mainAxisSpacing: isDesktop ? 10 : 6,
+                      ),
+                      itemCount: _slots.length,
+                      itemBuilder: (context, index) {
+                        final slot = _slots[index];
+                        final slotDateTime = DateTime(
+                          newDate.year,
+                          newDate.month,
+                          newDate.day,
+                          slot.hour,
+                          slot.minute,
+                        );
+                        final isTaken =
+                            provider.hasConflict(slotDateTime) &&
+                            !(slotDateTime.hour == apt.dateTime.hour &&
+                                slotDateTime.minute == apt.dateTime.minute &&
+                                slotDateTime.year == apt.dateTime.year &&
+                                slotDateTime.month == apt.dateTime.month &&
+                                slotDateTime.day == apt.dateTime.day);
+
+                        final scheme = Theme.of(context).colorScheme;
+                        return Material(
+                          color: Colors.transparent,
+                          child: InkWell(
+                            borderRadius: BorderRadius.circular(10),
+                            onTap: isTaken
+                                ? () {
+                                    Navigator.pop(dialogContext);
+                                    _showSlotTakenDialog(pageContext);
+                                  }
+                                : () {
+                                    Navigator.pop(dialogContext);
+                                    provider.rescheduleAppointment(
+                                      apt,
+                                      slotDateTime,
+                                    );
+                                  },
+                            child: Ink(
+                              decoration: BoxDecoration(
+                                color: isTaken
+                                    ? scheme.errorContainer.withValues(
+                                        alpha: 0.4,
+                                      )
+                                    : scheme.surfaceContainerHighest.withValues(
+                                        alpha: 0.35,
+                                      ),
+                                borderRadius: BorderRadius.circular(10),
+                                border: Border.all(
+                                  color: isTaken
+                                      ? scheme.error.withValues(alpha: 0.3)
+                                      : scheme.outline.withValues(alpha: 0.12),
+                                ),
+                              ),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    slot.format(context),
+                                    style: TextStyle(
+                                      fontSize: isDesktop ? 13 : 11,
+                                      fontWeight: FontWeight.w500,
+                                      color: isTaken
+                                          ? scheme.error.withValues(alpha: 0.6)
+                                          : scheme.onSurface.withValues(
+                                              alpha: 0.7,
+                                            ),
+                                    ),
+                                    maxLines: 1,
+                                    overflow: TextOverflow.clip,
+                                  ),
+                                  if (isTaken)
+                                    Text(
+                                      'Κλειστό',
+                                      style: TextStyle(
+                                        fontSize: isDesktop ? 10 : 8,
+                                        color: scheme.error.withValues(
+                                          alpha: 0.5,
+                                        ),
+                                      ),
+                                    ),
+                                ],
+                              ),
                             ),
-                            const SizedBox(width: 60),
-                            FilledButton(
-                              onPressed: patientCtrl.text.isNotEmpty
-                                  ? () {
-                                      provider.updateAppointment(
-                                        apt,
-                                        patientCtrl.text.trim(),
-                                        phoneCtrl.text.trim(),
-                                        notesCtrl.text.trim(),
-                                      );
-                                      Navigator.pop(context);
-                                    }
-                                  : null,
-                              child: const Text('Αποθήκευση'),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 4),
-                        TextButton.icon(
-                          onPressed: () {
-                            provider.deleteAppointment(apt);
-                            Navigator.pop(context);
-                          },
-                          icon: const Icon(Icons.delete_outline, size: 16),
-                          label: const Text('Διαγραφή'),
-                          style: TextButton.styleFrom(
-                            foregroundColor: Colors.red.shade400,
                           ),
-                        ),
-                      ],
+                        );
+                      },
                     ),
+                  ),
+                  const SizedBox(height: 12),
+                  Align(
+                    alignment: Alignment.centerRight,
+                    child: TextButton(
+                      onPressed: () => Navigator.pop(dialogContext),
+                      child: const Text('Ακύρωση'),
+                    ),
+                  ),
                 ],
               ),
             ),
@@ -401,12 +632,76 @@ class DayAppointmentsPage extends StatelessWidget {
         },
       ),
     );
+  }
 
-    WidgetsBinding.instance.addPostFrameCallback(
-      (_) => patientFocus.requestFocus(),
+  // ── Slot taken warning dialog ────────────────────────────────────────────────
+
+  void _showSlotTakenDialog(BuildContext pageContext) {
+    showDialog(
+      context: pageContext,
+      builder: (dialogContext) => AlertDialog(
+        icon: const Icon(
+          Icons.warning_amber_rounded,
+          color: Colors.orange,
+          size: 32,
+        ),
+        title: const Text('Η ώρα είναι κατειλημμένη'),
+        content: const Text(
+          'Υπάρχει ήδη ραντεβού σε αυτή την ώρα.\nΠαρακαλώ επιλέξτε άλλη ώρα.',
+          textAlign: TextAlign.center,
+        ),
+        actionsAlignment: MainAxisAlignment.center,
+        actions: [
+          FilledButton(
+            onPressed: () => Navigator.pop(dialogContext),
+            child: const Text('OK'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // ── Delete confirmation dialog ───────────────────────────────────────────────
+
+  void _showDeleteConfirmDialog(
+    BuildContext pageContext,
+    Appointment apt,
+    AppointmentProvider provider,
+  ) {
+    showDialog(
+      context: pageContext,
+      builder: (dialogContext) => AlertDialog(
+        icon: Icon(
+          Icons.delete_forever_outlined,
+          color: Colors.red.shade400,
+          size: 32,
+        ),
+        title: const Text('Διαγραφή Ραντεβού'),
+        content: Text(
+          'Είστε σίγουροι ότι θέλετε να διαγράψετε το ραντεβού του ${apt.patientName};',
+          textAlign: TextAlign.center,
+        ),
+        actionsAlignment: MainAxisAlignment.center,
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(dialogContext),
+            child: const Text('Ακύρωση'),
+          ),
+          FilledButton(
+            style: FilledButton.styleFrom(backgroundColor: Colors.red.shade400),
+            onPressed: () {
+              provider.deleteAppointment(apt);
+              Navigator.pop(dialogContext);
+            },
+            child: const Text('Διαγραφή'),
+          ),
+        ],
+      ),
     );
   }
 }
+
+// ── Slot tile ─────────────────────────────────────────────────────────────────
 
 class _SlotTile extends StatelessWidget {
   final TimeOfDay slot;
@@ -431,11 +726,9 @@ class _SlotTile extends StatelessWidget {
     final bgColor = isBooked
         ? scheme.primaryContainer
         : scheme.surfaceContainerHighest.withValues(alpha: 0.35);
-
     final borderColor = isBooked
         ? scheme.primary.withValues(alpha: 0.4)
         : scheme.outline.withValues(alpha: 0.12);
-
     final timeColor = isBooked
         ? scheme.primary
         : scheme.onSurface.withValues(alpha: 0.45);
@@ -486,6 +779,8 @@ class _SlotTile extends StatelessWidget {
     );
   }
 }
+
+// ── Time pill ─────────────────────────────────────────────────────────────────
 
 class _TimePill extends StatelessWidget {
   final String timeLabel;
