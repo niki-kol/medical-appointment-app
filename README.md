@@ -21,3 +21,6 @@ This application allows multiple users to manage and synchronize appointments in
 
 ## 🔹 Notes
 This project is not publicly available due to privacy considerations, as it is used by specific users.
+<img width="800" height="362" alt="Appointment Calendar View" src="https://github.com/user-attachments/assets/1d3fcb0c-28d7-4689-9493-3500e9d9d57a" />
+<img width="800" height="362" alt="Appointment Search" src="https://github.com/user-attachments/assets/0c48f965-bb63-46f7-9bdb-c4b8754cd330" />
+<img width="800" height="362" alt="Control Panel" src="https://github.com/user-attachments/assets/ea281f6d-44b9-414c-8887-8ba624ab34de" />
