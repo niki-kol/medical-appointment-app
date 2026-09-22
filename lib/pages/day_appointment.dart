@@ -254,9 +254,14 @@ class DayAppointmentsPage extends StatelessWidget {
     Appointment apt,
     AppointmentProvider provider,
   ) {
-    final patientCtrl = TextEditingController(text: apt.patientName);
-    final phoneCtrl = TextEditingController(text: apt.phoneNumber);
-    final notesCtrl = TextEditingController(text: apt.notes);
+    final patientCtrl = TextEditingController(text: apt.patientName)
+      ..selection = TextSelection.collapsed(offset: apt.patientName.length);
+    final phoneCtrl = TextEditingController(text: apt.phoneNumber ?? '')
+      ..selection = TextSelection.collapsed(
+        offset: (apt.phoneNumber ?? '').length,
+      );
+    final notesCtrl = TextEditingController(text: apt.notes ?? '')
+      ..selection = TextSelection.collapsed(offset: (apt.notes ?? '').length);
     final patientFocus = FocusNode();
     final isDesktop = MediaQuery.of(pageContext).size.width > 600;
     final timeLabel = TimeOfDay.fromDateTime(apt.dateTime).format(pageContext);
