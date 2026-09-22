@@ -14,7 +14,12 @@ class DayAppointmentsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final provider = Provider.of<AppointmentProvider>(context);
-    final appointments = provider.getAppointmentsForDay(day);
+    final now = DateTime.now();
+    final isPast =
+        day.year < now.year ||
+        (day.year == now.year && day.month < now.month) ||
+        (day.year == now.year && day.month == now.month && day.day < now.day);
+    final appointments = isPast ? [] : provider.getAppointmentsForDay(day);
     final isDesktop = MediaQuery.of(context).size.width > 600;
     final dateLabel = DateFormat.yMMMMd('el_GR').format(day);
 

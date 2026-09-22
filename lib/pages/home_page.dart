@@ -87,8 +87,14 @@ class _HomePageState extends State<HomePage> {
                   selectedDayPredicate: (day) => isSameDay(_selectedDay, day),
                   rowHeight: isDesktop ? 56 : 44,
                   daysOfWeekHeight: isDesktop ? 32 : 24,
-                  eventLoader: (day) =>
-                      appointmentProvider.getAppointmentsForDay(day),
+                  eventLoader: (day) {
+                    if (day.isBefore(
+                      DateTime.now().subtract(const Duration(days: 1)),
+                    )) {
+                      return [];
+                    }
+                    return appointmentProvider.getAppointmentsForDay(day);
+                  },
                   onDaySelected: (selectedDay, focusedDay) {
                     setState(() {
                       _selectedDay = selectedDay;
