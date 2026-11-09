@@ -551,13 +551,10 @@ class DayAppointmentsPage extends StatelessWidget {
                           slot.hour,
                           slot.minute,
                         );
-                        final isTaken =
-                            provider.hasConflict(slotDateTime) &&
-                            !(slotDateTime.hour == apt.dateTime.hour &&
-                                slotDateTime.minute == apt.dateTime.minute &&
-                                slotDateTime.year == apt.dateTime.year &&
-                                slotDateTime.month == apt.dateTime.month &&
-                                slotDateTime.day == apt.dateTime.day);
+                        final isTaken = provider.hasConflict(
+                          slotDateTime,
+                          ignoreId: apt.id,
+                        );
 
                         final scheme = Theme.of(context).colorScheme;
                         return Material(
@@ -569,12 +566,16 @@ class DayAppointmentsPage extends StatelessWidget {
                                     Navigator.pop(dialogContext);
                                     _showSlotTakenDialog(pageContext);
                                   }
-                                : () {
+                                : () async {
                                     Navigator.pop(dialogContext);
-                                    provider.rescheduleAppointment(
-                                      apt,
-                                      slotDateTime,
-                                    );
+                                    final ok = await provider
+                                        .rescheduleAppointment(
+                                          apt,
+                                          slotDateTime,
+                                        );
+                                    if (!ok && pageContext.mounted) {
+                                      _showSlotTakenDialog(pageContext);
+                                    }
                                   },
                             child: Ink(
                               decoration: BoxDecoration(

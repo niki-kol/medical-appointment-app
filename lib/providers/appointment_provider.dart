@@ -1,12 +1,9 @@
+import '../helpers/appointment_utils.dart';
 import '../helpers/imports.dart';
 
 class AppointmentProvider extends ChangeNotifier {
   final _col = FirebaseFirestore.instance.collection('appointments');
   List<Appointment> _appointments = [];
-
-  // Strip milliseconds/microseconds for consistent comparison
-  DateTime _normalize(DateTime dt) =>
-      DateTime(dt.year, dt.month, dt.day, dt.hour, dt.minute);
 
   AppointmentProvider() {
     _col.orderBy('dateTime').snapshots().listen((snapshot) {
@@ -18,7 +15,7 @@ class AppointmentProvider extends ChangeNotifier {
           patientName: data['patientName'] ?? '',
           phoneNumber: data['phoneNumber'],
           notes: data['notes'],
-          dateTime: _normalize(raw),
+          dateTime: normalizeDateTime(raw),
         );
       }).toList();
       notifyListeners();
@@ -28,26 +25,16 @@ class AppointmentProvider extends ChangeNotifier {
 
   List<Appointment> get allAppointments => _appointments;
 
-  List<Appointment> getAppointmentsForDay(DateTime day) {
-    return _appointments
-        .where(
-          (a) =>
-              a.dateTime.year == day.year &&
-              a.dateTime.month == day.month &&
-              a.dateTime.day == day.day,
-        )
-        .toList()
-      ..sort((a, b) => a.dateTime.compareTo(b.dateTime));
-  }
+  List<Appointment> getAppointmentsForDay(DateTime day) =>
+      appointmentsForDay(_appointments, day);
 
-  bool hasConflict(DateTime dateTime) {
-    final normalized = _normalize(dateTime);
-    return _appointments.any((a) => _normalize(a.dateTime) == normalized);
-  }
+  /// Pass [ignoreId] when rescheduling so an appointment doesn't conflict with itself.
+  bool hasConflict(DateTime dateTime, {String? ignoreId}) =>
+      hasTimeConflict(_appointments, dateTime, ignoreId: ignoreId);
 
   Future<bool> addAppointment(Appointment appointment) async {
     if (hasConflict(appointment.dateTime)) return false;
-    final normalized = _normalize(appointment.dateTime);
+    final normalized = normalizeDateTime(appointment.dateTime);
     await _col.add({
       'patientName': appointment.patientName,
       'phoneNumber': appointment.phoneNumber,
@@ -74,13 +61,16 @@ class AppointmentProvider extends ChangeNotifier {
     await _col.doc(appointment.id).delete();
   }
 
-  Future<void> rescheduleAppointment(
+  /// Returns false (and writes nothing) if [newDateTime] is taken by another appointment.
+  Future<bool> rescheduleAppointment(
     Appointment appointment,
     DateTime newDateTime,
   ) async {
+    if (hasConflict(newDateTime, ignoreId: appointment.id)) return false;
     await _col.doc(appointment.id).update({
-      'dateTime': Timestamp.fromDate(_normalize(newDateTime)),
+      'dateTime': Timestamp.fromDate(normalizeDateTime(newDateTime)),
     });
+    return true;
   }
 
   Future<void> _runArchiveIfNeeded() async {
